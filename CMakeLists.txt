@@ -40,42 +40,12 @@ else()
     endif()
 endif()
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin CACHE PATH "")
+set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib CACHE PATH "")
 
-set(CPR_LIBRARIES cpr CACHE INTERNAL "")
-set(CPR_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE INTERNAL "")
+set(CPR_LIBRARIES libcpr CACHE STRING "")
+set(CPR_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")
 
-macro(cpr_option OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
-    option(${OPTION_NAME} ${OPTION_TEXT} ${OPTION_DEFAULT})
-    if(DEFINED ENV{${OPTION_NAME}})
-        # Allow setting the option through an environment variable
-        set(${OPTION_NAME} $ENV{${OPTION_NAME}})
-    endif()
-    if(${OPTION_NAME})
-        add_definitions(-D${OPTION_NAME})
-    endif()
-    message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
-endmacro()
+find_package(CURL REQUIRED)
 
-message(STATUS "C++ Requests CMake Options")
-message(STATUS "=======================================================")
-cpr_option(USE_SYSTEM_CURL
-    "If ON, this project will look in the system paths for an installed curl library" OFF)
-cpr_option(BUILD_CPR_TESTS "Set to ON to build cpr tests." ON)
-cpr_option(GENERATE_COVERAGE "Set to ON to generate coverage reports." OFF)
-cpr_option(CPR_CURL_NOSIGNAL "Set to ON to disable use of signals in libcurl." OFF)
-cpr_option(USE_SYSTEM_GTEST
-    "If ON, this project will look in the system paths for an installed gtest library" OFF)
-cpr_option(CMAKE_USE_OPENSSL "Use OpenSSL code. Experimental" ON)
-message(STATUS "=======================================================")
-
-if(BUILD_CPR_TESTS)
-    enable_testing()
-endif()
-
-add_subdirectory(opt)
 add_subdirectory(cpr)
-if(BUILD_CPR_TESTS)
-    add_subdirectory(test)
-endif()

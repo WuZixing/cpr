@@ -50,5 +50,4 @@ set(CPR_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")
 
 find_package(CURL REQUIRED)
 
-
 add_subdirectory(cpr)
